@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='UTF-8'/>
+<!--[if lt IE 9]>
+<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+<script src='http://underscorejs.org/underscore-min.js'></script>
+<script src='http://api.tiles.mapbox.com/mapbox.js/v0.6.7/mapbox.js'></script>
+<link href='http://api.tiles.mapbox.com/mapbox.js/v0.6.7/mapbox.css' rel='stylesheet' />
+<style>
+body {
+  margin:0px;
+  padding:0px;
+  font:normal 15px/20px Arial,sans-serif;
+  background:#fff;
+  }
+
+article {
+  width:33.3333%;
+  min-width:320px;
+  position:relative;
+  padding-top:40px;
+  padding-bottom:33.3333%;
+  }
+section {
+  padding:40px;
+  margin-left:40px;
+  position:relative;
+  transition:background 500ms, color 500ms;
+  -moz-transition:background 500ms, color 500ms;
+  -webkit-transition:background 500ms, color 500ms;
+  }
+section,
+section a {
+  color:#888;
+  color:rgba(128,128,128,0);
+  text-decoration:none;
+  text-shadow:rgba(64,64,64,1) 0px 0px 4px;
+  }
+section.active {
+  background:#222;
+  color:#eee;
+  }
+section.active a { color:#eee; }
+section.active small { color:#aaa; }
+h1 { font-size:2em; line-height:1em; }
+h2 { font-size:1.3333em; }
+h1,h2 { margin:0px 0px 10px; }
+p { margin:0px; }
+
+.scroll {
+  position:absolute;
+  right:0px; bottom:0px;
+  font-size:10px;
+  text-transform:uppercase;
+  padding:5px 10px;
+  }
+.colophon {
+  display:block;
+  margin-top:10px;
+  }
+
+.cover:before {
+  content:'';
+  display:block;
+  width:120px; height:120px;
+  margin:0px auto 20px;
+  }
+.cover.active:before { background:url(sprite.png) 0px -120px no-repeat; }
+
+#pane {
+  position:fixed;
+  top:0px;
+  bottom:0px;
+  right:0px;
+  width:66.6666%;
+  }
+#map  {
+  position:absolute;
+  top:0px;
+  bottom:0px;
+  width:200%;
+  left:-50%;
+  transition:opacity 250ms;
+  -moz-transition:opacity 250ms;
+  -webkit-transition:opacity 250ms;
+  }
+
+.spot {
+  width:35px;
+  height:90px;
+  margin:-50px 0px 0px -15px;
+  position:absolute;
+  }
+.spot-cover { display:none; }
+.spot-windows { background:url(http://a.tiles.mapbox.com/v3/marker/pin-s-circle+9dc3d7.png) no-repeat; }
+.spot-windows.active { background:url(http://a.tiles.mapbox.com/v3/marker/pin-l-circle+214099.png) no-repeat; }
+.spot-delicate { background:url(http://a.tiles.mapbox.com/v3/marker/pin-s-circle+9dc3d7.png) no-repeat; }
+.spot-delicate.active { background:url(arch_icon.png) no-repeat; }
+.spot-salt { background:url(http://a.tiles.mapbox.com/v3/marker/pin-s-circle+9dc3d7.png) no-repeat; }
+.spot-salt.active { background:url(http://a.tiles.mapbox.com/v3/marker/pin-l-circle+214099.png) no-repeat; }
+.spot-balanced { background:url(http://a.tiles.mapbox.com/v3/marker/pin-s-circle+9dc3d7.png) no-repeat; }
+.spot-balanced.active { background:url(http://a.tiles.mapbox.com/v3/marker/pin-l-circle+214099.png) no-repeat; }
+.spot-onion { background:url(http://a.tiles.mapbox.com/v3/marker/pin-s-circle+9dc3d7.png) no-repeat; }
+.spot-onion.active { background:url(http://a.tiles.mapbox.com/v3/marker/pin-l-circle+214099.png) no-repeat; }
+.spot-tuk { background:url(http://a.tiles.mapbox.com/v3/marker/pin-s-circle+9dc3d7.png) no-repeat; }
+.spot-tuk.active { background:url(http://a.tiles.mapbox.com/v3/marker/pin-l-circle+214099.png) no-repeat; }
+.spot-grandview { background:url(http://a.tiles.mapbox.com/v3/marker/pin-s-circle+9dc3d7.png) no-repeat; }
+.spot-grandview.active { background:url(http://a.tiles.mapbox.com/v3/marker/pin-l-circle+214099.png) no-repeat; }
+.spot-dead { background:url(http://a.tiles.mapbox.com/v3/marker/pin-s-circle+9dc3d7.png) no-repeat; }
+.spot-dead.active { background:url(http://a.tiles.mapbox.com/v3/marker/pin-l-circle+214099.png) no-repeat; }
+
+/* Distinguish the "cover page" visually other sections. */
+body.section-0 #map { opacity:0.5; }
+
+@media (max-width:640px) {
+  body {
+    font-size:12px;
+    line-height:16px;
+    }
+  article {
+    width:100%;
+    min-width:100%;
+    padding-top:0px;
+    padding-bottom:200%;
+    }
+  section {
+    text-shadow:none;
+    margin-left:0px;
+    padding:30px;
+    }
+  section.active {
+    position:fixed;
+    top:0px; left:0px; right:0px;
+    }
+  #pane { width:100%; }
+  #map  {
+    bottom:0%;
+    left:0%;
+    width:100%;
+    height:150%;
+    }
+  }
+
+@media (min-width:1280px) {
+  body {
+    font-size:18px;
+    line-height:24px;
+    }
+  }
+</style>
+</head>
+<body class='section-0'>
+
+<div id='pane'><div id='map'></div></div>
+
+<article>
+  <section id='cover' class='cover active'>
+    <h1>Desert Solitaire</h1>
+    <p>by Edward Abbey</p><hr>
+	<p>"I put on a coat and step outside. Into the center of the world, God’s navel, Abbey’s country, the red wasteland."</p>
+    <small class='scroll'>Scroll ▼</small>
+  </section>
+  <section id='windows'>
+    <h2>The Windows</h2>
+    <p>"I walk out the foot trail to Double Arch and the Windows. The wind moans a dreary tune under the overhanging coves, among the holes in the rock, and through the dead pinyon pines. The sky is obscure and yellow but the air in this relatively sheltered place among the rocks is still clear." </p>
+  </section>
+  <section id='delicate'>
+    <h2>Delicate Arch</h2>
+    <p>"A weird, lovely, fantastic object out of nature like Delicate Arch has the curious ability to remind us—like rock and sunlight and wind and wilderness—that out there is a different world, older and greater and deeper by far than ours, a world which surrounds and sustains the little world of men as sea and sky surround and sustain a ship. The shock of the real."</p>
+  </section>
+  <section id='salt'>
+    <h2>Salt Valley</h2>
+    <p>"The season is late—late summer on the high desert. The thunderstorms have been less frequent lately, the tumbleweeds are taking on the reddish tinge of their maturity, and the various grasses—bluestem, fescue, Indian ricegrass, grama grass—which flourished after the summer rains have ripened to a tawny brown; in the slanting light of morning and evening the far-off fields in Salt Valley, where these grasses are most abundant, shine like golden velvet."</p>
+  </section>
+  <section id='balanced'>
+    <h2>Balanced Rock</h2>
+    <p>"Somnolence—a heaviness in the air, a chill in the sunlight, an oppressive stillness in the atmosphere that hints of much but says nothing. The Balanced Rock and the pinnacles stand in petrified silence—waiting. The wildlife has withdrawn to the night, the flies and gnats have disappeared, a few birds sing, and the last of the flowers of summer—the globemallow—have died. What is it that’s haunting me? At times I hear voices up the road, familiar voices… I look; and no one is there."</p>
+  </section>
+  <section id='onion'>
+    <h2>Onion Spring</h2>
+    <p>"Northeast of Moab in a region of gargoyles and hobgoblins, a landscape left over from the late Jurassic, is a peculiar little waterhole named Onion Spring. A few wild onions grow in the vicinity but more striking, in season, is the golden princess plume, an indicator of selenium, a mild poison often found in association with uranium, a poison not so mild."</p>
+  </section>
+  <section id='tuk'>
+    <h2>Tukuhnikivats</h2>
+    <p>"Dawn winds are driving streamers of snow off the peaks of the Sierra La Sal and old man Tukuhnikivats, mightiest of mountains in the land of Moab, will soon be stripped bare to the granite if this wind doesn’t stop. Blue scarves of snow flying in the wind twenty miles away—you wouldn’t want to be up there now, as they say out here, 13,000 feet above the sea, with only your spurs on."</p>
+  </section>
+  <section id='grandview'>
+    <h2>Grandview Point</h2>
+    <p>"Southwest, toward Grandview Point and The Maze, I can see V-shaped black wings in the lonely sky, soaring higher and higher against a yellow sunset. I think of the dead man under the juniper on the edge of the world, seeing him as the vulture would have seen him, far below and from a great distance. And I see myself through those cruel eyes."</p>
+  </section>
+  <section id='dead'>
+    <h2>Dead Horse Point</h2>
+    <p>"Finally he was discovered ten days after the search began near an abandoned miner’s shack below Dead Horse Point. They found him sitting on the ground hammering feebly at an ancient can of beans, trying to open the can with a stone. Hospitalized for exposure, shock and malnutrition, he urged that the entrance to Cataract Canyon be somehow chained off, closed forever to human exploration."</p>
+    <small class='colophon'>
+      Adapted from <a href='http://books.google.com/books?id=lkhMtksYyhYC&printsec=frontcover&dq=desert+solitaire&hl=en&sa=X&ei=bd6sUZj_NJLI4APNh4DoCQ&ved=0CDYQ6AEwAA'>Desert Solitaire, by Edward Abbey</a><br/>
+      Map data &copy; <a href='http://openstreetmap.org/copyright'>OpenStreetMap Contributors</a> & USGS<br/>
+      Map design by <a href='http://geosprocket.com'>Geosprocket LLC</a>
+    </small>
+  </section>
+</article>
+
+<script>
+var geojson = [
+  { "geometry": { "type": "Point", "coordinates": [-109.57077026367188,38.61579745317872] },
+    "properties": { "id": "cover", "zoom": 12 } },
+  { "geometry": { "type": "Point", "coordinates": [-109.260063, 38.439472] },
+    "properties": { "id": "tuk" } },
+  { "geometry": { "type": "Point", "coordinates": [-109.243412, 38.695023] },
+    "properties": { "id": "onion" } },
+  { "geometry": { "type": "Point", "coordinates": [-109.499402, 38.74344] },
+    "properties": { "id": "delicate" } },
+  { "geometry": { "type": "Point", "coordinates": [-109.637975999, 38.780116] },
+    "properties": { "id": "salt" } },
+  { "geometry": { "type": "Point", "coordinates": [-109.7412299, 38.45453] },
+    "properties": { "id": "dead" } },
+  { "geometry": { "type": "Point", "coordinates": [-109.8550420, 38.318629] },
+    "properties": { "id": "grandview" } },
+  { "geometry": { "type": "Point", "coordinates": [-109.564118, 38.700248] },
+    "properties": { "id": "balanced" } },
+  { "geometry": { "type": "Point", "coordinates": [-109.533219, 38.686414] },
+    "properties": { "id": "windows" } }
+];
+var tiles = mapbox.layer().tilejson({
+  tiles: [ "http://a.tiles.mapbox.com/v3/landplanner.map-azfnqdsx,landplanner.arches3/{z}/{x}/{y}.png" ]
+});
+var spots = mapbox.markers.layer()
+  // Load up markers from geojson data.
+  .features(geojson)
+  // Define a new factory function. Takes geojson input and returns a
+  // DOM element that represents the point.
+  .factory(function(f) {
+    var el = document.createElement('div');
+    el.className = 'spot spot-' + f.properties.id;
+    return el;
+  });
+
+// Creates the map with tile and marker layers and
+// no input handlers (mouse drag, scrollwheel, etc).
+var map = mapbox.map('map', [tiles, spots], null, []);
+
+// Array of story section elements.
+var sections = document.getElementsByTagName('section');
+
+// Array of marker elements with order matching section elements.
+var markers = _(sections).map(function(section) {
+  return _(spots.markers()).find(function(m) {
+    return m.data.properties.id === section.id;
+  });
+});
+
+// Helper to set the active section.
+var setActive = function(index, ease) {
+  // Set active class on sections, markers.
+  _(sections).each(function(s) { s.className = s.className.replace(' active', '') });
+  _(markers).each(function(m) { m.element.className = m.element.className.replace(' active', '') });
+  sections[index].className += ' active';
+  markers[index].element.className += ' active';
+
+  // Set a body class for the active section.
+  document.body.className = 'section-' + index;
+
+  // Ease map to active marker.
+  if (!ease) {
+    map.centerzoom(markers[index].location, markers[index].data.properties.zoom||13);
+  } else {
+    map.ease.location(markers[index].location).zoom(markers[index].data.properties.zoom||13).optimal(0.5, 1.00);
+  }
+
+  return true;
+};
+
+// Bind to scroll events to find the active section.
+window.onscroll = _(function() {
+  // IE 8
+  if (window.pageYOffset === undefined) {
+    var y = document.documentElement.scrollTop;
+    var h = document.documentElement.clientHeight;
+  } else {
+    var y = window.pageYOffset;
+    var h = window.innerHeight;
+  }
+
+  // If scrolled to the very top of the page set the first section active.
+  if (y === 0) return setActive(0, true);
+
+  // Otherwise, conditionally determine the extent to which page must be
+  // scrolled for each section. The first section that matches the current
+  // scroll position wins and exits the loop early.
+  var memo = 0;
+  var buffer = (h * 0.3333);
+  var active = _(sections).any(function(el, index) {
+    memo += el.offsetHeight;
+    return y < (memo-buffer) ? setActive(index, true) : false;
+  });
+
+  // If no section was set active the user has scrolled past the last section.
+  // Set the last section active.
+  if (!active) setActive(sections.length - 1, true);
+}).debounce(10);
+
+// Set map to first section.
+setActive(0, false);
+</script>
+
+</body>
+</html>
