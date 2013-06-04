@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta charset='UTF-8'/>
 <!--[if lt IE 9]>
 <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -8,11 +9,12 @@
 <script src='http://underscorejs.org/underscore-min.js'></script>
 <script src='http://api.tiles.mapbox.com/mapbox.js/v0.6.7/mapbox.js'></script>
 <link href='http://api.tiles.mapbox.com/mapbox.js/v0.6.7/mapbox.css' rel='stylesheet' />
+<link href='http://fonts.googleapis.com/css?family=Indie+Flower' rel='stylesheet' type='text/css'>
 <style>
 body {
   margin:0px;
   padding:0px;
-  font:normal 15px/20px Arial,sans-serif;
+  font:normal 15px/20px 'Indie Flower', cursive;
   background:#fff;
   }
 
@@ -67,7 +69,7 @@ p { margin:0px; }
   width:120px; height:120px;
   margin:0px auto 20px;
   }
-.cover.active:before { background:url(sprite.png) 0px -120px no-repeat; }
+.cover.active:before { background:url(arch_icon.png) no-repeat; }
 
 #pane {
   position:fixed;
@@ -94,22 +96,22 @@ p { margin:0px; }
   position:absolute;
   }
 .spot-cover { display:none; }
-.spot-windows { background:url(http://a.tiles.mapbox.com/v3/marker/pin-s-circle+9dc3d7.png) no-repeat; }
-.spot-windows.active { background:url(http://a.tiles.mapbox.com/v3/marker/pin-l-circle+214099.png) no-repeat; }
-.spot-delicate { background:url(http://a.tiles.mapbox.com/v3/marker/pin-s-circle+9dc3d7.png) no-repeat; }
-.spot-delicate.active { background:url(arch_icon.png) no-repeat; }
-.spot-salt { background:url(http://a.tiles.mapbox.com/v3/marker/pin-s-circle+9dc3d7.png) no-repeat; }
-.spot-salt.active { background:url(http://a.tiles.mapbox.com/v3/marker/pin-l-circle+214099.png) no-repeat; }
-.spot-balanced { background:url(http://a.tiles.mapbox.com/v3/marker/pin-s-circle+9dc3d7.png) no-repeat; }
-.spot-balanced.active { background:url(http://a.tiles.mapbox.com/v3/marker/pin-l-circle+214099.png) no-repeat; }
-.spot-onion { background:url(http://a.tiles.mapbox.com/v3/marker/pin-s-circle+9dc3d7.png) no-repeat; }
-.spot-onion.active { background:url(http://a.tiles.mapbox.com/v3/marker/pin-l-circle+214099.png) no-repeat; }
-.spot-tuk { background:url(http://a.tiles.mapbox.com/v3/marker/pin-s-circle+9dc3d7.png) no-repeat; }
-.spot-tuk.active { background:url(http://a.tiles.mapbox.com/v3/marker/pin-l-circle+214099.png) no-repeat; }
-.spot-grandview { background:url(http://a.tiles.mapbox.com/v3/marker/pin-s-circle+9dc3d7.png) no-repeat; }
-.spot-grandview.active { background:url(http://a.tiles.mapbox.com/v3/marker/pin-l-circle+214099.png) no-repeat; }
-.spot-dead { background:url(http://a.tiles.mapbox.com/v3/marker/pin-s-circle+9dc3d7.png) no-repeat; }
-.spot-dead.active { background:url(http://a.tiles.mapbox.com/v3/marker/pin-l-circle+214099.png) no-repeat; }
+.spot-windows { background:url(http://a.tiles.mapbox.com/v3/marker/pin-s-circle-stroked+9dc3d7.png) no-repeat; }
+.spot-windows.active { background:url(http://a.tiles.mapbox.com/v3/marker/pin-l-circle-stroked+ffdf79.png) no-repeat; }
+.spot-delicate { background:url(http://a.tiles.mapbox.com/v3/marker/pin-s-circle-stroked+9dc3d7.png) no-repeat; }
+.spot-delicate.active { background:url(http://a.tiles.mapbox.com/v3/marker/pin-l-circle-stroked+ffdf79.png) no-repeat; }
+.spot-salt { background:url(http://a.tiles.mapbox.com/v3/marker/pin-s-circle-stroked+9dc3d7.png) no-repeat; }
+.spot-salt.active { background:url(http://a.tiles.mapbox.com/v3/marker/pin-l-circle-stroked+ffdf79.png) no-repeat; }
+.spot-balanced { background:url(http://a.tiles.mapbox.com/v3/marker/pin-s-circle-stroked+9dc3d7.png) no-repeat; }
+.spot-balanced.active { background:url(http://a.tiles.mapbox.com/v3/marker/pin-l-circle-stroked+ffdf79.png) no-repeat; }
+.spot-onion { background:url(http://a.tiles.mapbox.com/v3/marker/pin-s-circle-stroked+9dc3d7.png) no-repeat; }
+.spot-onion.active { background:url(http://a.tiles.mapbox.com/v3/marker/pin-l-circle-stroked+ffdf79.png) no-repeat; }
+.spot-tuk { background:url(http://a.tiles.mapbox.com/v3/marker/pin-s-circle-stroked+9dc3d7.png) no-repeat; }
+.spot-tuk.active { background:url(http://a.tiles.mapbox.com/v3/marker/pin-l-circle-stroked+ffdf79.png) no-repeat; }
+.spot-grandview { background:url(http://a.tiles.mapbox.com/v3/marker/pin-s-circle-stroked+9dc3d7.png) no-repeat; }
+.spot-grandview.active { background:url(http://a.tiles.mapbox.com/v3/marker/pin-l-circle-stroked+ffdf79.png) no-repeat; }
+.spot-dead { background:url(http://a.tiles.mapbox.com/v3/marker/pin-s-circle-stroked+9dc3d7.png) no-repeat; }
+.spot-dead.active { background:url(http://a.tiles.mapbox.com/v3/marker/pin-l-circle-stroked+ffdf79.png) no-repeat; }
 
 /* Distinguish the "cover page" visually other sections. */
 body.section-0 #map { opacity:0.5; }
@@ -204,7 +206,7 @@ body.section-0 #map { opacity:0.5; }
 <script>
 var geojson = [
   { "geometry": { "type": "Point", "coordinates": [-109.57077026367188,38.61579745317872] },
-    "properties": { "id": "cover", "zoom": 12 } },
+    "properties": { "id": "cover", "zoom": 11 } },
   { "geometry": { "type": "Point", "coordinates": [-109.260063, 38.439472] },
     "properties": { "id": "tuk" } },
   { "geometry": { "type": "Point", "coordinates": [-109.243412, 38.695023] },
@@ -223,7 +225,7 @@ var geojson = [
     "properties": { "id": "windows" } }
 ];
 var tiles = mapbox.layer().tilejson({
-  tiles: [ "http://a.tiles.mapbox.com/v3/landplanner.map-azfnqdsx,landplanner.arches3/{z}/{x}/{y}.png" ]
+  tiles: [ "http://a.tiles.mapbox.com/v3/landplanner.map-azfnqdsx,landplanner.arches4,landplanner.map-v9fzb5f0/{z}/{x}/{y}.png" ]
 });
 var spots = mapbox.markers.layer()
   // Load up markers from geojson data.
